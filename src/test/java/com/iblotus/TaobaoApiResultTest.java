@@ -15,7 +15,7 @@ public class TaobaoApiResultTest {
                 "    \"accessToken\": null,\n" +
                 "    \"products\": []\n" +
                 "}";
-        TaobaoApiResult result = new TaobaoApiResult(rawString);
+        DefaultTaobaoApiResult result = new DefaultTaobaoApiResult(rawString);
         Assert.assertEquals(rawString, result.toString());
     }
 }

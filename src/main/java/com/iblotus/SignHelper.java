@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * URL签名帮助类
  */
-public final class SignHelper {
+final class SignHelper {
 
     private static final String CHARSET = "UTF-8";
 

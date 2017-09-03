@@ -24,22 +24,12 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
     private String methodName;
     private Map<String, ApiParam> params = new HashMap<String, ApiParam>();
     private TaobaoApiConfig config;
-    private final String charset = "UTF-8";
+    private static final String charset = "UTF-8";
 
     public DefaultTaobaoMethod(String methodName, TaobaoApiConfig config) {
 
         this.methodName = methodName;
         this.config = config;
-    }
-
-    private String getAccessToken() {
-
-        return this.accessToken;
-    }
-
-    private String getName() {
-
-        return this.methodName;
     }
 
     @Override
@@ -54,19 +44,10 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
         return this;
     }
 
-    private Map<String, String> toApiParams() {
-
-        Map<String, String> map = new HashMap<String, String>();
-        for (Map.Entry<String, ApiParam> entry : this.params.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().format());
-        }
-        return map;
-    }
-
     @Override
     public TaobaoApiResult call() throws IOException {
 
-        String accessToken = this.getAccessToken();
+        String accessToken = this.accessToken;
         Map<String, String> paramss = this.toApiParams();
         paramss.put("v", version);
         paramss.put("app_key", config.getAppKey());
@@ -77,12 +58,8 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         paramss.put("timestamp", formatter.format(new Date()));
         paramss.put("format", format);
-        paramss.put("method", this.getName());
-        try {
-            paramss.put("sign", SignHelper.signTopRequest(paramss, config.getSecret()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        paramss.put("method", this.methodName);
+        paramss.put("sign", SignHelper.signTopRequest(paramss, config.getSecret()));
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost post = new HttpPost(config.getUrl());
@@ -98,17 +75,17 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
         post.setEntity(stringEntity);
         CloseableHttpResponse response = httpclient.execute(post);
         String result = this.readString(response.getEntity().getContent());
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        JsonNode jsonNode = objectMapper.readTree(result);
-//        JsonNode errNode = jsonNode.findValue("error_response");
-//        if(errNode != null){
-//            String code = errNode.get("code").asText();
-//            String msg = errNode.get("msg").asText();
-//            String requestId = errNode.get("request_id").asText();
-//            throw new TaobaoApiException(code, msg, requestId);
-//        }
         System.out.println(result);
-        return new TaobaoApiResult(result);
+        return new DefaultTaobaoApiResult(result, config.getDecoder(this.methodName));
+    }
+
+    private Map<String, String> toApiParams() {
+
+        Map<String, String> map = new HashMap<String, String>();
+        for (Map.Entry<String, ApiParam> entry : this.params.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().format());
+        }
+        return map;
     }
 
     private String readString(InputStream inputStream) throws IOException {

@@ -1,5 +1,8 @@
 package com.iblotus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 淘宝接口代理类
  */
@@ -10,6 +13,8 @@ public class TaobaoApiConfig {
     private String appKey;
 
     private String secret;
+
+    private Map<String, ContentDecoder> decoderMap = new HashMap<String, ContentDecoder>();
 
     public TaobaoApiConfig(String url, String appKey, String secret){
 
@@ -28,6 +33,16 @@ public class TaobaoApiConfig {
 
     public String getSecret() {
         return secret;
+    }
+
+    public void addDecoder(String methodName, ContentDecoder decoder){
+
+        this.decoderMap.put(methodName, decoder);
+    }
+
+    public ContentDecoder getDecoder(String methodName){
+
+        return this.decoderMap.get(methodName);
     }
 
     public TaobaoApiMethod createMethod(String methodName) {
