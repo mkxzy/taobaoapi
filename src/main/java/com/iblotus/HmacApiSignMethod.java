@@ -9,13 +9,20 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * URL签名帮助类
+ * Created by xiezhiyan on 17-9-3.
+ * Hmac算法
  */
-final class SignHelper {
+class HmacApiSignMethod implements ApiSignMethod {
 
+    private final String secret;
     private static final String CHARSET = "UTF-8";
 
-    public static String signTopRequest(Map<String, String> params, String secret) throws IOException {
+    public HmacApiSignMethod(final String secret){
+        this.secret = secret;
+    }
+
+    @Override
+    public String sign(Map<String, String> params) throws IOException {
         // 第一步：检查参数是否已经排序
         String[] keys = params.keySet().toArray(new String[0]);
         Arrays.sort(keys);
@@ -30,23 +37,13 @@ final class SignHelper {
         }
 
         // 第三步：使用MD5/HMAC加密
-        byte[] bytes = encryptHMAC(query.toString(), secret);
+        byte[] bytes = encryptHMAC(query.toString());
 
         // 第四步：把二进制转化为大写的十六进制
         return byte2hex(bytes);
     }
 
-    private static boolean areNotEmpty(String key, String value){
-        if(key == null || key.equals("")){
-            return false;
-        }
-        if(value == null || value.equals("")){
-            return false;
-        }
-        return true;
-    }
-
-    private static byte[] encryptHMAC(String data, String secret) throws IOException {
+    private byte[] encryptHMAC(String data) throws IOException {
         byte[] bytes = null;
         try {
             SecretKey secretKey = new SecretKeySpec(secret.getBytes(CHARSET), "HmacMD5");
@@ -57,6 +54,16 @@ final class SignHelper {
             throw new IOException(gse.toString());
         }
         return bytes;
+    }
+
+    private static boolean areNotEmpty(String key, String value){
+        if(key == null || key.equals("")){
+            return false;
+        }
+        if(value == null || value.equals("")){
+            return false;
+        }
+        return true;
     }
 
     private static String byte2hex(byte[] bytes) {

@@ -17,9 +17,9 @@ import java.util.*;
 
 class DefaultTaobaoMethod implements TaobaoApiMethod {
 
-    private String version = "2.0";
-    private String signMethod = "hmac";
-    private String format = "json";
+    private final String version = "2.0";
+    private final String signMethod = "hmac";
+    private final String format = "json";
     private String accessToken;
     private String methodName;
     private Map<String, ApiParam> params = new HashMap<String, ApiParam>();
@@ -59,7 +59,7 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
         paramss.put("timestamp", formatter.format(new Date()));
         paramss.put("format", format);
         paramss.put("method", this.methodName);
-        paramss.put("sign", SignHelper.signTopRequest(paramss, config.getSecret()));
+        paramss.put("sign", this.getSignMethod().sign(paramss));
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost post = new HttpPost(config.getUrl());
@@ -75,8 +75,12 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
         post.setEntity(stringEntity);
         CloseableHttpResponse response = httpclient.execute(post);
         String result = this.readString(response.getEntity().getContent());
-        System.out.println(result);
-        return new DefaultTaobaoApiResult(result, config.getDecoder(this.methodName));
+//        System.out.println(result);
+        return new JsonTaobaoApiResult(result, config.getDecoder(this.methodName));
+    }
+
+    private ApiSignMethod getSignMethod(){
+        return new HmacApiSignMethod(config.getSecret());
     }
 
     private Map<String, String> toApiParams() {

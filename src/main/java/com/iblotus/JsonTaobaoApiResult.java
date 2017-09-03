@@ -9,17 +9,17 @@ import java.io.IOException;
  * Created by xiezhiyan on 17-8-31.
  * 淘宝API调用结果
  */
-class DefaultTaobaoApiResult implements TaobaoApiResult {
+public class JsonTaobaoApiResult implements TaobaoApiResult {
 
     private final String rawString;
     private ContentDecoder resultDecoder;
 
-    public DefaultTaobaoApiResult(String rawString, ContentDecoder resultDecoder){
+    public JsonTaobaoApiResult(String rawString, ContentDecoder resultDecoder){
         this.rawString = rawString;
         this.resultDecoder = resultDecoder;
     }
 
-    public DefaultTaobaoApiResult(String rawString){
+    public JsonTaobaoApiResult(String rawString){
         this(rawString, null);
     }
 
@@ -30,9 +30,6 @@ class DefaultTaobaoApiResult implements TaobaoApiResult {
 
     public <T> T getObject(ContentDecoder<T> decoder){
 
-        if(this.resultDecoder == null){
-            throw new RuntimeException("未设置解码器");
-        }
         TaobaoApiException exception = this.getException();
         if(exception != null){
             throw exception;
@@ -42,6 +39,10 @@ class DefaultTaobaoApiResult implements TaobaoApiResult {
 
     @Override
     public Object getObject(){
+
+        if(this.resultDecoder == null){
+            throw new RuntimeException("未设置解码器");
+        }
         return this.getObject(this.resultDecoder);
     }
 
