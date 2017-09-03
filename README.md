@@ -1,6 +1,7 @@
-# taobaoapi
+# 背景
 
-淘宝官方的API实在太难用了，于是自己封装了一个
+淘宝官方的API实在太难用了，于是自己封装了一个<br>
+[淘宝API文档](https://open.taobao.com/docs/api_list.htm?spm=a219a.7386653.1.22.WbbOOb)
 
 ## 示例
 
