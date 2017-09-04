@@ -3,7 +3,7 @@ package com.iblotus;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Map;
@@ -22,7 +22,7 @@ class HmacApiSignMethod implements ApiSignMethod {
     }
 
     @Override
-    public String sign(Map<String, String> params) throws IOException {
+    public String sign(Map<String, String> params){
         // 第一步：检查参数是否已经排序
         String[] keys = params.keySet().toArray(new String[0]);
         Arrays.sort(keys);
@@ -43,7 +43,7 @@ class HmacApiSignMethod implements ApiSignMethod {
         return byte2hex(bytes);
     }
 
-    private byte[] encryptHMAC(String data) throws IOException {
+    private byte[] encryptHMAC(String data){
         byte[] bytes = null;
         try {
             SecretKey secretKey = new SecretKeySpec(secret.getBytes(CHARSET), "HmacMD5");
@@ -51,7 +51,9 @@ class HmacApiSignMethod implements ApiSignMethod {
             mac.init(secretKey);
             bytes = mac.doFinal(data.getBytes(CHARSET));
         } catch (GeneralSecurityException gse) {
-            throw new IOException(gse.toString());
+            throw new RuntimeException(gse);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
         return bytes;
     }

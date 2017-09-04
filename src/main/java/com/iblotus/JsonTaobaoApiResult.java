@@ -15,6 +15,7 @@ public class JsonTaobaoApiResult implements TaobaoApiResult {
     private ContentDecoder resultDecoder;
 
     public JsonTaobaoApiResult(String rawString, ContentDecoder resultDecoder){
+
         this.rawString = rawString;
         this.resultDecoder = resultDecoder;
     }

@@ -14,6 +14,12 @@ public class TaobaoApiConfig {
 
     private String secret;
 
+    private final String signMethod = "hmac";
+
+    private final String version = "2.0";
+
+    private final String resultFormat = "json";
+
     private Map<String, ContentDecoder> decoderMap = new HashMap<String, ContentDecoder>();
 
     public TaobaoApiConfig(String url, String appKey, String secret){
@@ -45,8 +51,20 @@ public class TaobaoApiConfig {
         return this.decoderMap.get(methodName);
     }
 
+    public String getSignMethod() {
+        return signMethod;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getResultFormat() {
+        return resultFormat;
+    }
+
     public TaobaoApiMethod createMethod(String methodName) {
 
-        return new DefaultTaobaoMethod(methodName, this);
+        return new DefaultTaobaoApiMethod(methodName, this);
     }
 }

@@ -15,18 +15,16 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-class DefaultTaobaoMethod implements TaobaoApiMethod {
+class DefaultTaobaoApiMethod implements TaobaoApiMethod {
 
-    private final String version = "2.0";
-    private final String signMethod = "hmac";
-    private final String format = "json";
+//    private final String format = "json";
     private String accessToken;
     private String methodName;
     private Map<String, ApiParam> params = new HashMap<String, ApiParam>();
     private TaobaoApiConfig config;
     private static final String charset = "UTF-8";
 
-    public DefaultTaobaoMethod(String methodName, TaobaoApiConfig config) {
+    public DefaultTaobaoApiMethod(String methodName, TaobaoApiConfig config) {
 
         this.methodName = methodName;
         this.config = config;
@@ -49,15 +47,15 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
 
         String accessToken = this.accessToken;
         Map<String, String> paramss = this.toApiParams();
-        paramss.put("v", version);
+        paramss.put("v", config.getVersion());
         paramss.put("app_key", config.getAppKey());
         if (accessToken != null && !accessToken.equals("")) {
             paramss.put("session", accessToken);
         }
-        paramss.put("sign_method", signMethod);
+        paramss.put("sign_method", config.getSignMethod());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         paramss.put("timestamp", formatter.format(new Date()));
-        paramss.put("format", format);
+        paramss.put("format", this.config.getResultFormat());
         paramss.put("method", this.methodName);
         paramss.put("sign", this.getSignMethod().sign(paramss));
 
@@ -75,7 +73,6 @@ class DefaultTaobaoMethod implements TaobaoApiMethod {
         post.setEntity(stringEntity);
         CloseableHttpResponse response = httpclient.execute(post);
         String result = this.readString(response.getEntity().getContent());
-//        System.out.println(result);
         return new JsonTaobaoApiResult(result, config.getDecoder(this.methodName));
     }
 

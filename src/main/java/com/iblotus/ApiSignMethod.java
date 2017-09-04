@@ -1,6 +1,5 @@
 package com.iblotus;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -9,5 +8,5 @@ import java.util.Map;
  */
 interface ApiSignMethod {
 
-    String sign(Map<String, String> params) throws IOException;
+    String sign(Map<String, String> params);
 }
