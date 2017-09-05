@@ -3,6 +3,15 @@
 淘宝官方的API实在太难用了，于是自己封装了一个<br>
 [淘宝API文档](https://open.taobao.com/docs/api_list.htm?spm=a219a.7386653.1.22.WbbOOb)
 
+## 引用
+```maven
+<dependency>
+    <groupId>com.iblotus</groupId>
+    <artifactId>taobao-api</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
 ## 调用示例
 
 ```java
