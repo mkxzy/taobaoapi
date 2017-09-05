@@ -4,7 +4,7 @@
 
     <groupId>com.iblotus</groupId>
     <artifactId>taobao-api</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
     <name>taobao-api</name>
     <url>https://github.com/mkxzy/taobaoapi</url>
